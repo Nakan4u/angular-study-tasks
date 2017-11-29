@@ -1,0 +1,16 @@
+.navigation,
+.carousel-inner {
+    float: left;
+}
+
+.bullets {
+    clear: both;
+    margin: 10px;
+    list-style: none;
+}
+.bullets li {
+    float: left;
+}
+.active {
+    background-color: grey;
+}
