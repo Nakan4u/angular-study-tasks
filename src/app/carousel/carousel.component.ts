@@ -18,7 +18,7 @@ import { CarouselItemComponent } from '../carousel-item/carousel-item.component'
 })
 export class CarouselComponent implements AfterContentInit {
   private intervalId;
-  private currentIndex: number = 0;
+  private currentIndex: number = 1;
   public carouselItems: any;
 
   @Input('delay') delay: string;
@@ -26,15 +26,20 @@ export class CarouselComponent implements AfterContentInit {
 
   ngAfterContentInit() {
     this.carouselItems = this.carouselContentItems.toArray();
-    this.intervalId = setInterval(() => {this.changeCarousel()}, +this.delay);
+    this.intervalId = setInterval(() => {this.changeCarousel(false)}, +this.delay);
+
+    this.carouselItems[0].isHidden = false; //set first item visible by default;
   }
 
-  private changeCarousel() {
+  private changeCarousel(isManual) {
     let items: CarouselItemComponent[] = this.carouselItems;
 
-    if (this.currentIndex > items.length) this.currentIndex = 0;
-    items.forEach((item, i) => item.isHidden = this.currentIndex === i);
-    this.currentIndex++;
+    if(!isManual) this.currentIndex++;
+
+    if (this.currentIndex > items.length) this.currentIndex = 1;
+    else if (this.currentIndex === 0) this.currentIndex = items.length;
+
+    items.forEach((item, i) => item.isHidden = this.currentIndex !== i + 1);
   };
 
   OnDestroy() {
@@ -49,12 +54,12 @@ export class CarouselComponent implements AfterContentInit {
     } else if (event === 'prev') {
       this.currentIndex--;
     }
-    this.changeCarousel();
+    this.changeCarousel(true);
   }
 
   navigateByIndex(index) {
     this.currentIndex = index;
-    this.changeCarousel();
+    this.changeCarousel(false);
   }
 
 }

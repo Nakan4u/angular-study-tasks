@@ -6,5 +6,5 @@ import { Component, OnInit, ViewChild, ElementRef, AfterContentInit, AfterViewIn
   styleUrls: ['./carousel-item.component.css']
 })
 export class CarouselItemComponent{
-  public isHidden: boolean = false;
+  public isHidden: boolean = true;
 }

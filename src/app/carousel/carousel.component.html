@@ -6,7 +6,7 @@
   <carousel-navigation class="navigation" [direction]="'next'" (navigate)="onNavigate($event)"></carousel-navigation>
   <ul class="bullets">
     <li *ngFor="let item of carouselItems; let i = index">
-      <button [ngClass]="{'active':i === currentIndex - 1}" (click)="navigateByIndex(i)">{{i + 1}}</button>
+      <button [ngClass]="{'active':i + 1 === currentIndex}" (click)="navigateByIndex(i)">{{i + 1}}</button>
     </li>
   </ul>
 </div>
