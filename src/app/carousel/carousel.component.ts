@@ -3,6 +3,7 @@ import {
   Input,
   Output,
   ContentChildren,
+  ViewChildren,
   AfterContentInit,
   AfterViewInit,
   QueryList
@@ -16,25 +17,32 @@ import { CarouselItemComponent } from '../carousel-item/carousel-item.component'
   templateUrl: './carousel.component.html',
   styleUrls: ['./carousel.component.css']
 })
-export class CarouselComponent implements AfterContentInit {
+export class CarouselComponent implements AfterContentInit, AfterViewInit {
   private intervalId;
   private currentIndex: number = 1;
-  public carouselItems: any;
+  private carouselItems: CarouselItemComponent[] = [];
 
   @Input('delay') delay: string;
   @ContentChildren(CarouselItemComponent) carouselContentItems: QueryList<CarouselItemComponent>;
+  @ViewChildren(CarouselItemComponent) carouselViewItems: QueryList<CarouselItemComponent>;
 
   ngAfterContentInit() {
-    this.carouselItems = this.carouselContentItems.toArray();
-    this.intervalId = setInterval(() => {this.changeCarousel(false)}, +this.delay);
+    console.log('carouselContentItems', this.carouselContentItems.toArray());
+  }
 
-    this.carouselItems[0].isHidden = false; //set first item visible by default;
+  ngAfterViewInit() {
+    console.log('carouselViewItems', this.carouselViewItems.toArray());
+    setTimeout(() => { // fixing `ExpressionChangedAfterItHasBeenCheckedError` error 
+      this.carouselItems = this.carouselContentItems.toArray().concat(this.carouselViewItems.toArray()); // merge content and view items;
+      this.carouselItems[0].isHidden = false; //set first item visible by default;
+      this.intervalId = setInterval(() => { this.changeCarousel(false) }, +this.delay);
+    });
   }
 
   private changeCarousel(isManual) {
     let items: CarouselItemComponent[] = this.carouselItems;
 
-    if(!isManual) this.currentIndex++;
+    if (!isManual) this.currentIndex++;
 
     if (this.currentIndex > items.length) this.currentIndex = 1;
     else if (this.currentIndex === 0) this.currentIndex = items.length;
@@ -46,7 +54,7 @@ export class CarouselComponent implements AfterContentInit {
     this.intervalId.clearInterval()();
   }
 
-  constructor() {}
+  constructor() { }
 
   onNavigate(event) {
     if (event === 'next') {
